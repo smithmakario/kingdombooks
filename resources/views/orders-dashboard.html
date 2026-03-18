@@ -669,7 +669,14 @@
   function updateStats() {
     var successful = allOrders.filter(function(o){ return o.status === 'success'; });
     var revenue = successful.reduce(function(sum, o){ return sum + o.amount; }, 0) / 100;
-    var books = Math.round(revenue / 5000);
+    var books = successful.reduce(function(sum, order) {
+      var booksField = getMetaField(order, 'books') || '';
+      if (!booksField || booksField === 'Book Launch Seed') return sum;
+
+      return sum + booksField.split(',').filter(function(book) {
+        return book.trim().length > 0;
+      }).length;
+    }, 0);
 
     document.getElementById('stat-total').textContent   = allOrders.length;
     document.getElementById('stat-success').textContent = successful.length;
