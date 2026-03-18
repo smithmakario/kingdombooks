@@ -174,6 +174,26 @@
 
   .btn-logout:hover { border-color:var(--gold); color:var(--gold); }
 
+  .btn-home {
+    background:var(--gold);
+    border:1px solid var(--gold);
+    color:var(--white);
+    padding:0.4rem 1rem;
+    font-family:'Jost',sans-serif;
+    font-size:0.72rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    text-decoration:none;
+    cursor:pointer;
+    border-radius:3px;
+    transition:all 0.2s;
+    display:inline-flex;
+    align-items:center;
+    white-space:nowrap;
+  }
+
+  .btn-home:hover { background:transparent; color:var(--gold); }
+
   .dash-body { padding:2rem; max-width:1400px; margin:0 auto; }
 
   /* STATS ROW */
@@ -494,10 +514,12 @@
   <div class="dash-header">
     <div>
       <span class="dash-brand">Orders Dashboard <span>Apostle Segun Obadje</span></span>
+
     </div>
     <div class="dash-header-actions">
       <span class="dash-env-badge" id="env-badge">Test Mode</span>
-      <button class="btn-logout" onclick="logout()">Log Out</button>
+      <a class="btn-home" href="/">Back to Home</a>
+      <button class="btn-logout" onclick="logout()">Dashboard</button>
     </div>
   </div>
 
