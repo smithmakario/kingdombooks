@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\UserApprovalController;
 use App\Http\Controllers\PaystackController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReceiptController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -11,6 +12,9 @@ Route::get('/', function () {
 
 Route::get('/paystack/public-key', [PaystackController::class, 'publicKey'])
     ->name('paystack.public-key');
+Route::post('/payments/confirm', [ReceiptController::class, 'confirm'])->name('payments.confirm');
+Route::get('/receipt/{reference}', [ReceiptController::class, 'show'])->name('receipts.show');
+Route::get('/receipt/{reference}/download', [ReceiptController::class, 'download'])->name('receipts.download');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

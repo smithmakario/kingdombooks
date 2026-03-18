@@ -866,6 +866,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ===== PAYSTACK KEY =====
   var PK = '';
+  var EMAIL_STORAGE_KEY = 'kbk_launch_emails';
+
+  function readStoredEmails() {
+    try {
+      var raw = localStorage.getItem(EMAIL_STORAGE_KEY);
+      if (!raw) return [];
+      var parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (err) {
+      return [];
+    }
+  }
+
+  function writeStoredEmails(emails) {
+    localStorage.setItem(EMAIL_STORAGE_KEY, JSON.stringify(emails));
+  }
 
   function loadPaystackPublicKey() {
     fetch('/paystack/public-key', {
@@ -885,6 +901,58 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   loadPaystackPublicKey();
+
+  function finalizePayment(reference, context, successMessage) {
+    showToast(successMessage + ' Ref: ' + reference);
+
+    var fallbackReceiptUrl = '/receipt/' + encodeURIComponent(reference);
+    var fallbackTimer = setTimeout(function() {
+      window.location.assign(fallbackReceiptUrl);
+    }, 3000);
+
+    fetch('/payments/confirm', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      keepalive: true,
+      body: JSON.stringify({
+        reference: reference,
+        context: context
+      })
+    })
+    .then(function(res) { return res.text(); })
+    .then(function(text) {
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        return null;
+      }
+    })
+    .then(function(data) {
+      if (data && data.status && data.receipt_url) {
+        clearTimeout(fallbackTimer);
+        window.location.assign(data.receipt_url);
+        return;
+      }
+
+      if (data && data.status) {
+        clearTimeout(fallbackTimer);
+        window.location.assign(fallbackReceiptUrl);
+        return;
+      }
+
+      if (data && data.message) {
+        showToast('Payment confirmed. Opening receipt...');
+        console.warn('Receipt response:', data.message);
+      }
+    })
+    .catch(function(err) {
+      showToast('Payment confirmed. Opening receipt...');
+      console.warn('Receipt API error:', err);
+    });
+  }
 
   // ===== ORDER PAYMENT =====
   window.submitOrder = function() {
@@ -919,7 +987,17 @@ document.addEventListener('DOMContentLoaded', function() {
         {display_name:'Books',   variable_name:'books',   value:books}
       ]},
       onSuccess: function(t){
-        showToast('✦ Payment successful! Ref: '+t.reference);
+        var context = {
+          type: 'order',
+          name: name,
+          email: email,
+          phone: phone,
+          address: address,
+          delivery: document.getElementById('order-delivery').value,
+          books: books,
+          expected_amount_kobo: total * 100
+        };
+        finalizePayment(t.reference, context, '✦ Payment successful!');
         logToSheet({
           name: name, email: email, phone: phone,
           books: books, amount: '₦'+total.toLocaleString(),
@@ -988,7 +1066,17 @@ document.addEventListener('DOMContentLoaded', function() {
         {display_name:'Type', variable_name:'type', value:'Book Launch Seed'}
       ]},
       onSuccess: function(t){
-        showToast('✦ Seed received — thank you! Ref: '+t.reference);
+        var context = {
+          type: 'launch',
+          name: name,
+          email: email,
+          phone: phone || 'N/A',
+          address: 'N/A',
+          delivery: 'N/A',
+          books: 'Book Launch Seed',
+          expected_amount_kobo: val * 100
+        };
+        finalizePayment(t.reference, context, '✦ Seed received — thank you!');
         logToSheet({
           name: name, email: email, phone: phone||'N/A',
           books: 'Book Launch Seed', amount: '₦'+val.toLocaleString(),
@@ -1006,7 +1094,16 @@ document.addEventListener('DOMContentLoaded', function() {
   // ===== EMAIL =====
   window.subscribeEmail = function() {
     var v = document.getElementById('email-sub').value.trim();
-    if (!v||!v.includes('@')) { showToast('⚠ Please enter a valid email address.'); return; }
+    var normalized = v.toLowerCase();
+    var isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized);
+    if (!normalized || !isValid) { showToast('⚠ Please enter a valid email address.'); return; }
+
+    var emails = readStoredEmails();
+    if (emails.indexOf(normalized) === -1) {
+      emails.unshift(normalized);
+      writeStoredEmails(emails);
+    }
+
     document.getElementById('email-sub').value='';
     showToast("✦ You're on the list — we'll be in touch!");
   };

@@ -13,6 +13,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->validateCsrfTokens(except: [
+            'payments/confirm',
+        ]);
+
         $middleware->alias([
             'superadmin' => EnsureUserIsSuperadmin::class,
             'payments_admin' => EnsureUserCanViewPayments::class,
