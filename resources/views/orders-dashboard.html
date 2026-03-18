@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orders Dashboard — Apostle Segun Obadje</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1A2B4A;
+    --navy-soft: #2C3E5A;
+    --gold: #B8860B;
+    --gold-pale: #FDF3DC;
+    --cream: #FAF6EF;
+    --ivory: #F5EDD8;
+    --white: #FFFFFF;
+    --ink: #1C1C1C;
+    --muted: #7A6E5F;
+    --border: #DDD3BC;
+    --green: #2E7D32;
+    --green-pale: #F0F9F0;
+    --red: #B04040;
+    --red-pale: #FDF0F0;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--cream); color:var(--ink); font-family:'Jost',sans-serif; font-weight:300; min-height:100vh; }
+
+  /* ===== LOGIN SCREEN (disabled, auth is handled by Laravel middleware) ===== */
+  .login-screen {
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: var(--navy);
+    position:relative;
+    overflow:hidden;
+  }
+
+  .login-screen::before {
+    content:'';
+    position:absolute;
+    inset:0;
+    background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4A017' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events:none;
+  }
+
+  .login-box {
+    background:var(--cream);
+    border-radius:6px;
+    padding:3rem;
+    width:100%;
+    max-width:420px;
+    position:relative;
+    box-shadow:0 24px 64px rgba(0,0,0,0.3);
+  }
+
+  .login-logo {
+    font-family:'Playfair Display',serif;
+    font-size:1.1rem;
+    font-weight:600;
+    color:var(--navy);
+    text-align:center;
+    margin-bottom:0.4rem;
+  }
+
+  .login-sub {
+    font-size:0.72rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:var(--gold);
+    text-align:center;
+    margin-bottom:2.5rem;
+  }
+
+  .login-box label { font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); font-weight:500; display:block; margin-bottom:0.4rem; }
+
+  .login-box input {
+    width:100%;
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:3px;
+    padding:0.85rem 1rem;
+    font-family:'Jost',sans-serif;
+    font-size:0.95rem;
+    color:var(--ink);
+    outline:none;
+    transition:border-color 0.2s;
+    margin-bottom:1rem;
+  }
+
+  .login-box input:focus { border-color:var(--gold); }
+
+  .login-btn {
+    width:100%;
+    background:var(--navy);
+    color:var(--white);
+    border:none;
+    padding:1rem;
+    font-family:'Jost',sans-serif;
+    font-size:0.82rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    font-weight:500;
+    cursor:pointer;
+    border-radius:3px;
+    transition:all 0.2s;
+    margin-top:0.5rem;
+  }
+
+  .login-btn:hover { background:var(--gold); }
+
+  .login-error { color:var(--red); font-size:0.78rem; text-align:center; margin-top:0.75rem; display:none; }
+
+  .login-hint {
+    margin-top:1.5rem;
+    padding:1rem;
+    background:var(--gold-pale);
+    border:1px solid rgba(184,134,11,0.2);
+    border-radius:3px;
+    font-size:0.75rem;
+    color:var(--muted);
+    line-height:1.6;
+  }
+
+  .login-hint strong { color:var(--navy); }
+
+  /* ===== DASHBOARD ===== */
+  #dashboard { display:block; }
+
+  .dash-header {
+    background:var(--navy);
+    padding:1rem 2rem;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:sticky;
+    top:0;
+    z-index:100;
+    box-shadow:0 2px 12px rgba(0,0,0,0.15);
+  }
+
+  .dash-brand { font-family:'Playfair Display',serif; font-size:1rem; font-weight:600; color:var(--white); }
+  .dash-brand span { color:var(--gold); font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; font-family:'Jost',sans-serif; font-weight:400; margin-left:0.75rem; }
+
+  .dash-header-actions { display:flex; align-items:center; gap:1rem; }
+
+  .dash-env-badge {
+    font-size:0.65rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    padding:0.3rem 0.8rem;
+    border-radius:20px;
+    font-weight:500;
+  }
+
+  .badge-test { background:rgba(184,134,11,0.2); color:var(--gold); border:1px solid rgba(184,134,11,0.3); }
+  .badge-live { background:rgba(46,125,50,0.2); color:#4CAF50; border:1px solid rgba(46,125,50,0.3); }
+
+  .btn-logout {
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.2);
+    color:rgba(255,255,255,0.7);
+    padding:0.4rem 1rem;
+    font-family:'Jost',sans-serif;
+    font-size:0.72rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    cursor:pointer;
+    border-radius:3px;
+    transition:all 0.2s;
+  }
+
+  .btn-logout:hover { border-color:var(--gold); color:var(--gold); }
+
+  .dash-body { padding:2rem; max-width:1400px; margin:0 auto; }
+
+  /* STATS ROW */
+  .stats-row {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:1rem;
+    margin-bottom:2rem;
+  }
+
+  .stat-card {
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:1.5rem;
+  }
+
+  .stat-label { font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); margin-bottom:0.5rem; }
+  .stat-value { font-family:'Playfair Display',serif; font-size:2rem; font-weight:600; color:var(--navy); line-height:1; }
+  .stat-value.gold { color:var(--gold); }
+  .stat-value.green { color:var(--green); }
+  .stat-sub { font-size:0.72rem; color:var(--muted); margin-top:0.3rem; }
+
+  /* CONTROLS */
+  .controls-row {
+    display:flex;
+    align-items:center;
+    gap:1rem;
+    margin-bottom:1.5rem;
+    flex-wrap:wrap;
+  }
+
+  .search-box {
+    flex:1;
+    min-width:200px;
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:3px;
+    padding:0.7rem 1rem;
+    font-family:'Jost',sans-serif;
+    font-size:0.88rem;
+    color:var(--ink);
+    outline:none;
+    transition:border-color 0.2s;
+  }
+
+  .search-box:focus { border-color:var(--gold); }
+
+  .filter-select {
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:3px;
+    padding:0.7rem 1rem;
+    font-family:'Jost',sans-serif;
+    font-size:0.82rem;
+    color:var(--ink);
+    outline:none;
+    cursor:pointer;
+  }
+
+  .btn-refresh {
+    background:var(--navy);
+    color:var(--white);
+    border:none;
+    padding:0.7rem 1.5rem;
+    font-family:'Jost',sans-serif;
+    font-size:0.78rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    font-weight:500;
+    cursor:pointer;
+    border-radius:3px;
+    transition:all 0.2s;
+    display:flex;
+    align-items:center;
+    gap:0.5rem;
+    white-space:nowrap;
+  }
+
+  .btn-refresh:hover { background:var(--gold); }
+  .btn-refresh.loading { opacity:0.7; pointer-events:none; }
+
+  .btn-export {
+    background:transparent;
+    color:var(--navy);
+    border:1px solid var(--border);
+    padding:0.7rem 1.5rem;
+    font-family:'Jost',sans-serif;
+    font-size:0.78rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    font-weight:500;
+    cursor:pointer;
+    border-radius:3px;
+    transition:all 0.2s;
+    white-space:nowrap;
+  }
+
+  .btn-export:hover { border-color:var(--gold); color:var(--gold); }
+
+  /* TABLE */
+  .table-wrapper {
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:4px;
+    overflow:hidden;
+  }
+
+  .table-header-row {
+    padding:1rem 1.5rem;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:var(--ivory);
+  }
+
+  .table-title { font-size:0.8rem; font-weight:500; color:var(--navy); letter-spacing:0.05em; }
+  .table-count { font-size:0.72rem; color:var(--muted); }
+
+  .orders-table { width:100%; border-collapse:collapse; }
+
+  .orders-table th {
+    padding:0.75rem 1rem;
+    font-size:0.65rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:var(--muted);
+    font-weight:500;
+    text-align:left;
+    background:var(--cream);
+    border-bottom:1px solid var(--border);
+    white-space:nowrap;
+  }
+
+  .orders-table td {
+    padding:0.9rem 1rem;
+    font-size:0.82rem;
+    color:var(--ink);
+    border-bottom:1px solid var(--border);
+    vertical-align:top;
+  }
+
+  .orders-table tr:last-child td { border-bottom:none; }
+  .orders-table tbody tr:hover { background:var(--cream); cursor:pointer; }
+
+  .status-badge {
+    display:inline-flex;
+    align-items:center;
+    gap:0.3rem;
+    padding:0.25rem 0.7rem;
+    border-radius:20px;
+    font-size:0.65rem;
+    font-weight:500;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    white-space:nowrap;
+  }
+
+  .status-success { background:var(--green-pale); color:var(--green); border:1px solid #C3E6CB; }
+  .status-failed  { background:var(--red-pale);   color:var(--red);   border:1px solid #F5C6CB; }
+  .status-pending { background:var(--gold-pale);  color:var(--gold);  border:1px solid rgba(184,134,11,0.3); }
+
+  .amount-cell { font-family:'Playfair Display',serif; font-size:1rem; font-weight:600; color:var(--navy); white-space:nowrap; }
+
+  .ref-cell { font-size:0.72rem; color:var(--muted); font-family:monospace; }
+
+  .books-cell { max-width:200px; }
+  .books-tag { display:inline-block; background:var(--ivory); border:1px solid var(--border); border-radius:3px; padding:0.15rem 0.5rem; font-size:0.65rem; color:var(--navy); margin:0.1rem 0.1rem 0.1rem 0; white-space:nowrap; }
+
+  /* LOADING / EMPTY STATES */
+  .loading-state, .empty-state, .error-state {
+    padding:4rem 2rem;
+    text-align:center;
+    color:var(--muted);
+  }
+
+  .loading-spinner {
+    width:36px;
+    height:36px;
+    border:3px solid var(--border);
+    border-top-color:var(--gold);
+    border-radius:50%;
+    animation:spin 0.8s linear infinite;
+    margin:0 auto 1rem;
+  }
+
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  .empty-icon { font-size:3rem; margin-bottom:1rem; opacity:0.4; }
+  .empty-title { font-family:'Playfair Display',serif; font-size:1.2rem; color:var(--navy); margin-bottom:0.4rem; }
+  .empty-desc { font-size:0.82rem; line-height:1.6; }
+
+  .error-icon { font-size:2.5rem; margin-bottom:1rem; }
+  .error-title { font-size:1rem; font-weight:500; color:var(--red); margin-bottom:0.5rem; }
+  .error-desc { font-size:0.82rem; line-height:1.6; max-width:500px; margin:0 auto; }
+
+  /* ORDER DETAIL MODAL */
+  .modal-overlay {
+    position:fixed;
+    inset:0;
+    background:rgba(26,43,74,0.6);
+    z-index:1000;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:1rem;
+  }
+
+  .modal-overlay.open { display:flex; }
+
+  .modal {
+    background:var(--white);
+    border-radius:6px;
+    width:100%;
+    max-width:560px;
+    max-height:90vh;
+    overflow-y:auto;
+    box-shadow:0 24px 64px rgba(0,0,0,0.25);
+  }
+
+  .modal-header {
+    padding:1.5rem 2rem;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:var(--ivory);
+    position:sticky;
+    top:0;
+  }
+
+  .modal-title { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:600; color:var(--navy); }
+  .modal-close { background:none; border:none; font-size:1.4rem; color:var(--muted); cursor:pointer; line-height:1; padding:0.2rem 0.4rem; border-radius:3px; }
+  .modal-close:hover { background:var(--border); color:var(--ink); }
+
+  .modal-body { padding:2rem; }
+
+  .detail-row { display:flex; gap:1rem; margin-bottom:1.2rem; align-items:flex-start; }
+  .detail-label { font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); font-weight:500; min-width:120px; padding-top:0.15rem; flex-shrink:0; }
+  .detail-value { font-size:0.88rem; color:var(--ink); line-height:1.5; }
+  .detail-value.amount { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:600; color:var(--gold); }
+
+  .modal-divider { border:none; border-top:1px solid var(--border); margin:1.5rem 0; }
+
+  /* PAGINATION */
+  .pagination {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:0.5rem;
+    padding:1.5rem;
+    border-top:1px solid var(--border);
+  }
+
+  .page-btn {
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--muted);
+    width:36px;
+    height:36px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:3px;
+    cursor:pointer;
+    font-family:'Jost',sans-serif;
+    font-size:0.82rem;
+    transition:all 0.2s;
+  }
+
+  .page-btn:hover { border-color:var(--gold); color:var(--gold); }
+  .page-btn.active { background:var(--navy); border-color:var(--navy); color:var(--white); }
+  .page-btn:disabled { opacity:0.4; pointer-events:none; }
+
+  .page-info { font-size:0.78rem; color:var(--muted); padding:0 0.5rem; }
+
+  /* RESPONSIVE */
+  @media(max-width:900px) {
+    .stats-row { grid-template-columns:1fr 1fr; }
+    .orders-table th:nth-child(4), .orders-table td:nth-child(4),
+    .orders-table th:nth-child(6), .orders-table td:nth-child(6) { display:none; }
+  }
+
+  @media(max-width:600px) {
+    .dash-body { padding:1rem; }
+    .stats-row { grid-template-columns:1fr 1fr; gap:0.75rem; }
+    .controls-row { flex-direction:column; }
+    .search-box { width:100%; }
+    .orders-table th:nth-child(3), .orders-table td:nth-child(3) { display:none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="login-screen" class="login-screen" style="display:none;">
+  <div class="login-box">
+    <div class="login-logo">Apostle Segun Obadje</div>
+    <div class="login-sub">Orders Dashboard</div>
+
+    <div>
+      <label>Dashboard Password</label>
+      <input type="password" id="login-password" placeholder="Enter your password" onkeydown="if(event.key==='Enter') login()">
+    </div>
+
+    <button class="login-btn" onclick="login()">Access Dashboard →</button>
+    <div class="login-error" id="login-error">Incorrect password. Please try again.</div>
+
+    <div class="login-hint">
+      Access is controlled by your Laravel account permissions.
+    </div>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div id="dashboard">
+  <div class="dash-header">
+    <div>
+      <span class="dash-brand">Orders Dashboard <span>Apostle Segun Obadje</span></span>
+    </div>
+    <div class="dash-header-actions">
+      <span class="dash-env-badge" id="env-badge">Test Mode</span>
+      <button class="btn-logout" onclick="logout()">Log Out</button>
+    </div>
+  </div>
+
+  <div class="dash-body">
+    <!-- SHEETS BANNER -->
+    <div style="background:#F0F9F0;border:1px solid #C3E6CB;border-radius:4px;padding:0.85rem 1.2rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;">
+      <div style="display:flex;align-items:center;gap:0.6rem;font-size:0.82rem;color:#2E7D32;font-weight:500;">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#2E7D32" stroke-width="1.4"/><path d="M5 8l2 2 4-4" stroke="#2E7D32" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Google Sheets logging is active — every successful payment is automatically saved to your spreadsheet.
+      </div>
+      <a href="https://docs.google.com/spreadsheets/" target="_blank" style="font-size:0.75rem;color:#2E7D32;font-weight:500;text-decoration:underline;white-space:nowrap;">Open Google Sheets →</a>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Total Orders</div>
+        <div class="stat-value" id="stat-total">—</div>
+        <div class="stat-sub">All transactions</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Successful</div>
+        <div class="stat-value green" id="stat-success">—</div>
+        <div class="stat-sub">Completed payments</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Revenue</div>
+        <div class="stat-value gold" id="stat-revenue">—</div>
+        <div class="stat-sub">From successful orders</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Books Sold</div>
+        <div class="stat-value" id="stat-books">—</div>
+        <div class="stat-sub">Estimated from revenue</div>
+      </div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="controls-row">
+      <input type="text" class="search-box" id="search-input" placeholder="Search by name, email, reference..." oninput="filterOrders()">
+      <select class="filter-select" id="status-filter" onchange="filterOrders()">
+        <option value="">All Statuses</option>
+        <option value="success">Successful</option>
+        <option value="failed">Failed</option>
+        <option value="abandoned">Abandoned</option>
+      </select>
+      <button class="btn-refresh" id="refresh-btn" onclick="loadOrders()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M13 7A6 6 0 1 1 7 1a6 6 0 0 1 4.5 2M13 1v3h-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Refresh
+      </button>
+      <button class="btn-export" onclick="exportCSV()">↓ Export CSV</button>
+      <a href="https://docs.google.com/spreadsheets/" target="_blank" class="btn-export" style="text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="1" width="11" height="11" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 6.5h5M6.5 4v5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Google Sheets
+      </a>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrapper">
+      <div class="table-header-row">
+        <span class="table-title">Transaction Records</span>
+        <span class="table-count" id="table-count">Loading...</span>
+      </div>
+      <div id="table-content">
+        <div class="loading-state">
+          <div class="loading-spinner"></div>
+          <div>Loading orders from Paystack...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER DETAIL MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-title">Order Details</div>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+  // ===== CONFIGURATION =====
+  // Backend endpoint that securely proxies Paystack transactions
+  var TRANSACTIONS_ENDPOINT = '/admin/paystack/transactions';
+
+  // 👇 Google Sheets Web App URL (already connected)
+  var SHEET_URL = 'https://script.google.com/macros/s/AKfycbwbA43FgqhFl_kLb7vzHaifOV2R71nMo7LDB7zXNx7A-zH7JFR8NDXg6hCPu5IUQGEr/exec';
+
+  // ===== STATE =====
+  var allOrders = [];
+  var filteredOrders = [];
+  var currentPage = 1;
+  var perPage = 50;
+
+  // ===== ACCESS (handled by Laravel auth/middleware) =====
+  function login() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadOrders();
+  }
+
+  function logout() {
+    window.location.href = '/dashboard';
+  }
+
+  // ===== LOAD ORDERS FROM PAYSTACK =====
+  function loadOrders() {
+    var btn = document.getElementById('refresh-btn');
+    btn.classList.add('loading');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="animation:spin 0.8s linear infinite"><path d="M13 7A6 6 0 1 1 7 1a6 6 0 0 1 4.5 2M13 1v3h-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Loading...';
+
+    document.getElementById('table-content').innerHTML = '<div class="loading-state"><div class="loading-spinner"></div><div>Fetching orders from Paystack...</div></div>';
+
+    fetch(TRANSACTIONS_ENDPOINT + '?perPage=100&page=1', {
+      credentials: 'same-origin',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function(res) {
+      return res.json().then(function(data) {
+        return { ok: res.ok, statusCode: res.status, data: data };
+      });
+    })
+    .then(function(result) {
+      var data = result.data || {};
+
+      btn.classList.remove('loading');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M13 7A6 6 0 1 1 7 1a6 6 0 0 1 4.5 2M13 1v3h-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Refresh';
+
+      if (!result.ok) {
+        var authError = result.statusCode === 401 || result.statusCode === 403;
+        showError(
+          authError ? 'Unauthorized' : 'Paystack API Error',
+          data.message || (authError
+            ? 'Your account does not have permission to view payments.'
+            : 'Could not fetch transactions from backend.')
+        );
+        return;
+      }
+
+      if (!data.status) {
+        showError('Paystack API Error', data.message || 'Could not fetch transactions.');
+        return;
+      }
+
+      var envBadge = document.getElementById('env-badge');
+      var isTest = data.environment === 'test';
+      envBadge.textContent = isTest ? 'Test Mode' : 'Live Mode';
+      envBadge.className = 'dash-env-badge ' + (isTest ? 'badge-test' : 'badge-live');
+
+      allOrders = data.data || [];
+      updateStats();
+      filterOrders();
+    })
+    .catch(function(err) {
+      btn.classList.remove('loading');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M13 7A6 6 0 1 1 7 1a6 6 0 0 1 4.5 2M13 1v3h-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Refresh';
+      showError('Network Error', 'Could not reach your backend API. Make sure Laravel is running and you are loading this page from the same app origin.');
+    });
+  }
+
+  // ===== UPDATE STATS =====
+  function updateStats() {
+    var successful = allOrders.filter(function(o){ return o.status === 'success'; });
+    var revenue = successful.reduce(function(sum, o){ return sum + o.amount; }, 0) / 100;
+    var books = Math.round(revenue / 5000);
+
+    document.getElementById('stat-total').textContent   = allOrders.length;
+    document.getElementById('stat-success').textContent = successful.length;
+    document.getElementById('stat-revenue').textContent = revenue > 0 ? '₦' + revenue.toLocaleString() : '₦0';
+    document.getElementById('stat-books').textContent   = books > 0 ? '~' + books : '0';
+  }
+
+  // ===== FILTER =====
+  function filterOrders() {
+    var search = document.getElementById('search-input').value.toLowerCase();
+    var status = document.getElementById('status-filter').value;
+
+    filteredOrders = allOrders.filter(function(o) {
+      var matchStatus = !status || o.status === status;
+      var name   = getMetaField(o, 'name') || getMetaField(o, 'customer_name') || '';
+      var matchSearch = !search || (
+        (o.customer && o.customer.email && o.customer.email.toLowerCase().includes(search)) ||
+        (o.reference && o.reference.toLowerCase().includes(search)) ||
+        name.toLowerCase().includes(search)
+      );
+      return matchStatus && matchSearch;
+    });
+
+    currentPage = 1;
+    renderTable();
+  }
+
+  // ===== RENDER TABLE =====
+  function renderTable() {
+    var count = document.getElementById('table-count');
+
+    if (filteredOrders.length === 0) {
+      count.textContent = '0 orders';
+      document.getElementById('table-content').innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">No orders found</div><div class="empty-desc">No transactions match your search or filter.</div></div>';
+      return;
+    }
+
+    count.textContent = filteredOrders.length + ' order' + (filteredOrders.length !== 1 ? 's' : '');
+
+    var start = (currentPage - 1) * perPage;
+    var end   = Math.min(start + perPage, filteredOrders.length);
+    var page  = filteredOrders.slice(start, end);
+
+    var rows = page.map(function(o, idx) {
+      var name    = getMetaField(o, 'name') || getMetaField(o, 'customer_name') || getMetaField(o, 'donor') || (o.customer ? o.customer.first_name + ' ' + o.customer.last_name : '—');
+      var phone   = getMetaField(o, 'phone') || '—';
+      var books   = getMetaField(o, 'books') || getMetaField(o, 'payment_type') || '—';
+      var address = getMetaField(o, 'address') || '—';
+      var email   = o.customer ? o.customer.email : '—';
+      var amount  = '₦' + (o.amount / 100).toLocaleString();
+      var date    = formatDate(o.paid_at || o.created_at);
+      var status  = o.status;
+      var ref     = o.reference || '—';
+
+      var bookTags = books !== '—' ? books.split(',').map(function(b){
+        return '<span class="books-tag">' + b.trim() + '</span>';
+      }).join('') : '<span style="color:var(--muted);font-size:0.75rem">—</span>';
+
+      var statusBadge = '<span class="status-badge status-' + (status === 'success' ? 'success' : status === 'failed' ? 'failed' : 'pending') + '">' +
+        (status === 'success' ? '✓ Paid' : status === 'failed' ? '✗ Failed' : '⏳ ' + status) + '</span>';
+
+      return '<tr onclick="openModal(' + (start + idx) + ')">' +
+        '<td><div style="font-weight:500;color:var(--navy)">' + name + '</div><div style="font-size:0.72rem;color:var(--muted)">' + email + '</div></td>' +
+        '<td class="amount-cell">' + amount + '</td>' +
+        '<td>' + statusBadge + '</td>' +
+        '<td class="books-cell">' + bookTags + '</td>' +
+        '<td style="white-space:nowrap">' + date + '</td>' +
+        '<td class="ref-cell">' + ref + '</td>' +
+        '</tr>';
+    }).join('');
+
+    var table = '<table class="orders-table">' +
+      '<thead><tr>' +
+      '<th>Customer</th><th>Amount</th><th>Status</th><th>Books</th><th>Date</th><th>Reference</th>' +
+      '</tr></thead>' +
+      '<tbody>' + rows + '</tbody>' +
+      '</table>';
+
+    // Pagination
+    var totalPages = Math.ceil(filteredOrders.length / perPage);
+    var pagination = '';
+    if (totalPages > 1) {
+      pagination = '<div class="pagination">' +
+        '<button class="page-btn" onclick="goToPage(' + (currentPage-1) + ')" ' + (currentPage===1?'disabled':'') + '>‹</button>';
+
+      for (var p = 1; p <= totalPages; p++) {
+        if (p === 1 || p === totalPages || (p >= currentPage-1 && p <= currentPage+1)) {
+          pagination += '<button class="page-btn' + (p===currentPage?' active':'') + '" onclick="goToPage('+p+')">' + p + '</button>';
+        } else if (p === currentPage-2 || p === currentPage+2) {
+          pagination += '<span class="page-info">…</span>';
+        }
+      }
+
+      pagination += '<button class="page-btn" onclick="goToPage(' + (currentPage+1) + ')" ' + (currentPage===totalPages?'disabled':'') + '>›</button>';
+      pagination += '<span class="page-info">Page ' + currentPage + ' of ' + totalPages + '</span></div>';
+    }
+
+    document.getElementById('table-content').innerHTML = table + pagination;
+  }
+
+  function goToPage(p) {
+    currentPage = p;
+    renderTable();
+    document.querySelector('.table-wrapper').scrollIntoView({behavior:'smooth'});
+  }
+
+  // ===== OPEN ORDER MODAL =====
+  function openModal(idx) {
+    var o = filteredOrders[idx];
+    if (!o) return;
+
+    var name    = getMetaField(o, 'name') || getMetaField(o, 'customer_name') || getMetaField(o, 'donor') || (o.customer ? o.customer.first_name + ' ' + o.customer.last_name : '—');
+    var phone   = getMetaField(o, 'phone') || '—';
+    var books   = getMetaField(o, 'books') || getMetaField(o, 'payment_type') || '—';
+    var address = getMetaField(o, 'address') || '—';
+    var email   = o.customer ? o.customer.email : '—';
+    var amount  = '₦' + (o.amount / 100).toLocaleString();
+    var date    = formatDate(o.paid_at || o.created_at);
+    var status  = o.status;
+
+    var statusBadge = '<span class="status-badge status-' + (status==='success'?'success':status==='failed'?'failed':'pending') + '">' +
+      (status==='success'?'✓ Payment Successful':status==='failed'?'✗ Payment Failed':'⏳ '+status) + '</span>';
+
+    var bookList = books !== '—' ? books.split(',').map(function(b){
+      return '<span class="books-tag" style="margin:0.2rem 0.2rem 0 0">' + b.trim() + '</span>';
+    }).join('') : '—';
+
+    document.getElementById('modal-body').innerHTML =
+      '<div class="detail-row"><div class="detail-label">Status</div><div class="detail-value">' + statusBadge + '</div></div>' +
+      '<div class="detail-row"><div class="detail-label">Amount Paid</div><div class="detail-value amount">' + amount + '</div></div>' +
+      '<hr class="modal-divider">' +
+      '<div class="detail-row"><div class="detail-label">Full Name</div><div class="detail-value">' + name + '</div></div>' +
+      '<div class="detail-row"><div class="detail-label">Email</div><div class="detail-value">' + email + '</div></div>' +
+      '<div class="detail-row"><div class="detail-label">Phone</div><div class="detail-value">' + phone + '</div></div>' +
+      '<div class="detail-row"><div class="detail-label">Address</div><div class="detail-value">' + address + '</div></div>' +
+      '<hr class="modal-divider">' +
+      '<div class="detail-row"><div class="detail-label">Books Ordered</div><div class="detail-value">' + bookList + '</div></div>' +
+      '<hr class="modal-divider">' +
+      '<div class="detail-row"><div class="detail-label">Date & Time</div><div class="detail-value">' + date + '</div></div>' +
+      '<div class="detail-row"><div class="detail-label">Reference</div><div class="detail-value" style="font-family:monospace;font-size:0.8rem">' + (o.reference||'—') + '</div></div>' +
+      '<div class="detail-row"><div class="detail-label">Channel</div><div class="detail-value" style="text-transform:capitalize">' + (o.channel||'—') + '</div></div>';
+
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById('modal-overlay')) closeModalDirect();
+  }
+
+  function closeModalDirect() {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+
+  // ===== EXPORT CSV =====
+  function exportCSV() {
+    if (filteredOrders.length === 0) { alert('No orders to export.'); return; }
+
+    var headers = ['Name','Email','Phone','Amount (₦)','Status','Books','Address','Date','Reference'];
+    var rows = filteredOrders.map(function(o) {
+      var name    = getMetaField(o,'name')||getMetaField(o,'customer_name')||getMetaField(o,'donor')||(o.customer?o.customer.first_name+' '+o.customer.last_name:'');
+      var phone   = getMetaField(o,'phone')||'';
+      var books   = getMetaField(o,'books')||getMetaField(o,'payment_type')||'';
+      var address = getMetaField(o,'address')||'';
+      return [
+        '"'+name+'"',
+        '"'+(o.customer?o.customer.email:'')+'"',
+        '"'+phone+'"',
+        (o.amount/100),
+        o.status,
+        '"'+books+'"',
+        '"'+address+'"',
+        '"'+formatDate(o.paid_at||o.created_at)+'"',
+        '"'+(o.reference||'')+'"'
+      ].join(',');
+    });
+
+    var csv = [headers.join(',')].concat(rows).join('\n');
+    var blob = new Blob([csv], {type:'text/csv'});
+    var url  = URL.createObjectURL(blob);
+    var a    = document.createElement('a');
+    a.href = url; a.download = 'orders-' + new Date().toISOString().slice(0,10) + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // ===== HELPERS =====
+  function getMetaField(o, key) {
+    if (!o.metadata || !o.metadata.custom_fields) return '';
+    var fields = o.metadata.custom_fields;
+    for (var i=0; i<fields.length; i++) {
+      if (fields[i].variable_name === key || fields[i].display_name && fields[i].display_name.toLowerCase() === key.toLowerCase()) {
+        return fields[i].value || '';
+      }
+    }
+    return '';
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return '—';
+    var d = new Date(dateStr);
+    return d.toLocaleDateString('en-NG', {day:'numeric',month:'short',year:'numeric'}) + ', ' +
+           d.toLocaleTimeString('en-NG', {hour:'2-digit',minute:'2-digit'});
+  }
+
+  function showError(title, desc) {
+    document.getElementById('table-content').innerHTML =
+      '<div class="error-state"><div class="error-icon">⚠️</div>' +
+      '<div class="error-title">' + title + '</div>' +
+      '<div class="error-desc">' + desc + '</div></div>';
+    document.getElementById('table-count').textContent = 'Error';
+  }
+
+  login();
+
+  // Keyboard shortcut: press Escape to close modal
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModalDirect(); });
+</script>
+</body>
+</html>
