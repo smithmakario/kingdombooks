@@ -24,6 +24,9 @@
                         <x-nav-link :href="route('admin.users.pending')" :active="request()->routeIs('admin.users.*')">
                             {{ __('Pending Approvals') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.paystack.logs')" :active="request()->routeIs('admin.paystack.logs')">
+                            {{ __('Paystack Logs') }}
+                        </x-nav-link>
                     @endif
                 </div>
             </div>
@@ -102,6 +105,9 @@
                 @if (Auth::user()->is_superadmin)
                     <x-responsive-nav-link :href="route('admin.users.pending')">
                         {{ __('Pending Approvals') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.paystack.logs')">
+                        {{ __('Paystack Logs') }}
                     </x-responsive-nav-link>
                 @endif
 

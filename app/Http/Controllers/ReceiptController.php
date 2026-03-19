@@ -40,17 +40,38 @@ class ReceiptController extends Controller
 
         $reference = $validated['reference'];
 
-        $verifyResponse = Http::acceptJson()
-            ->withToken($secretKey)
-            ->timeout(20)
-            ->get("https://api.paystack.co/transaction/verify/{$reference}");
+        try {
+            $verifyResponse = Http::acceptJson()
+                ->withToken($secretKey)
+                ->timeout(20)
+                ->get("https://api.paystack.co/transaction/verify/{$reference}");
+        } catch (\Throwable $exception) {
+            Log::error('Paystack verify request failed.', [
+                'reference' => $reference,
+                'error' => $exception->getMessage(),
+            ]);
 
-        $payload = $verifyResponse->json();
-
-        if (! is_array($payload) || ! $verifyResponse->ok()) {
             return response()->json([
                 'status' => false,
-                'message' => $payload['message'] ?? 'Unable to verify payment with Paystack.',
+                'message' => 'Unable to connect to Paystack right now. Please try again shortly.',
+            ], 502);
+        }
+
+        $payload = $verifyResponse->json();
+        $statusCode = $verifyResponse->status();
+
+        if (! is_array($payload) || ! $verifyResponse->ok()) {
+            Log::warning('Paystack verify returned an invalid or error response.', [
+                'reference' => $reference,
+                'status_code' => $statusCode,
+                'message' => is_array($payload) ? ($payload['message'] ?? null) : null,
+                'payload_status' => is_array($payload) ? ($payload['status'] ?? null) : null,
+                'raw_body' => is_array($payload) ? null : mb_substr($verifyResponse->body(), 0, 500),
+            ]);
+
+            return response()->json([
+                'status' => false,
+                'message' => $payload['message'] ?? 'Unable to verify payment with Paystack. Confirm your API keys and Paystack account status.',
             ], 422);
         }
 

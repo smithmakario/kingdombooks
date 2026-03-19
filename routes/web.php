@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\UserApprovalController;
+use App\Http\Controllers\Admin\PaystackLogController;
 use App\Http\Controllers\PaystackController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReceiptController;
@@ -29,6 +30,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'superadmin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/users/pending', [UserApprovalController::class, 'index'])->name('users.pending');
     Route::post('/users/{user}/approve', [UserApprovalController::class, 'approve'])->name('users.approve');
+    Route::get('/paystack/logs', [PaystackLogController::class, 'index'])->name('paystack.logs');
 });
 
 Route::middleware(['auth', 'payments_admin'])->prefix('admin')->name('admin.')->group(function () {

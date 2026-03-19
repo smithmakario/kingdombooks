@@ -400,13 +400,13 @@
       <h1 class="hero-title">Four Books.<br><em>One Apostolic</em><br>Mandate.</h1>
       <p class="hero-subtitle">Apostle Segun Obadje releases four landmark titles that equip, transform, and release believers into the fullness of their divine inheritance.</p>
       <div class="hero-actions">
-        <button class="btn-primary" onclick="showPage('order')">
+        <button class="btn-primary" onclick="showPage('books')">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M1 7h14" stroke="currentColor" stroke-width="1.5"/><path d="M4 11h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
           Pre-Order Now
         </button>
-        <button class="btn-outline" onclick="showPage('books')">Browse the Books →</button>
+        <button class="btn-outline" onclick="showPage('launch')">Launch the Books →</button>
       </div>
-      <p class="hero-savings-note">Pre-order pricing active · <strong>Save up to ₦2,000 per book</strong></p>
+      <p class="hero-savings-note">Pre-order pricing active · <strong>Save up to ₦2,000</strong> on all four books</p>
     </div>
     <div class="hero-books">
       <div class="book-card-mini" onclick="showPage('order')">
@@ -474,7 +474,7 @@
       <button class="strip-book" onclick="selectBook(0)" style="border:none;text-align:left;width:100%"><div class="strip-book-icon bc-1"><span style="color:rgba(212,160,23,0.8)">✦</span></div><div><div class="strip-book-title">The Power of the Blessing</div><div class="strip-book-price">₦3,500</div></div></button>
       <button class="strip-book" onclick="selectBook(1)" style="border:none;text-align:left;width:100%"><div class="strip-book-icon bc-2"><span style="color:rgba(212,160,23,0.8)">✦</span></div><div><div class="strip-book-title">Biblical Keys to Protection</div><div class="strip-book-price">₦2,000</div></div></button>
       <button class="strip-book" onclick="selectBook(2)" style="border:none;text-align:left;width:100%"><div class="strip-book-icon bc-3"><span style="color:rgba(212,160,23,0.8)">✦</span></div><div><div class="strip-book-title">Biblical Laws of Productivity</div><div class="strip-book-price">₦3,500</div></div></button>
-      <button class="strip-book" onclick="selectBook(3)" style="border:none;text-align:left;width:100%"><div class="strip-book-icon bc-4"><span style="color:rgba(212,160,23,0.8)">✦</span></div><div><div class="strip-book-title">Dominion Over Spirit of Jezebel</div><div class="strip-book-price">₦3,500</div></div></button>
+      <button class="strip-book" onclick="selectBook(3)" style="border:none;text-align:left;width:100%"><div class="strip-book-icon bc-4"><span style="color:rgba(212,160,23,0.8)">✦</span></div><div><div class="strip-book-title">Dominion Over the Spirit of Jezebel</div><div class="strip-book-price">₦3,500</div></div></button>
     </div>
   </div>
 
@@ -543,19 +543,39 @@
   <section class="books-section" style="background:var(--cream)">
     <div class="books-grid">
       <div class="book-card">
-        <div class="book-cover-full bc-1"><div class="book-number">01</div><div class="book-icon">✦</div><div class="book-full-title">The Power of the Blessing</div><div class="book-rule"></div><div class="book-full-author">Apostle Segun Obadje</div></div>
+        <div class="book-cover-full bc-1">
+          <img class="book-cover-image" src="assets/bookcovers/The Power of the Blessing.jpg" alt="The Power of the Blessing" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+          <div class="book-cover-fallback">
+            <div class="book-number">01</div><div class="book-icon">✦</div><div class="book-full-title">The Power of the Blessing</div><div class="book-rule"></div><div class="book-full-author">Apostle Segun Obadje</div>
+          </div>
+        </div>
         <div class="book-info"><p class="book-desc">An in-depth exploration of the biblical covenant of the blessing — what it is, how it operates, and how believers can position themselves to walk in its fullness.</p><div class="book-pricing"><div><div class="price-label">Actual</div><div class="price-full">₦4,000</div></div><div style="text-align:center"><div class="price-label">Pre-Order</div><div class="price-preorder">₦3,500</div></div><div class="save-chip">Save ₦500</div></div><button class="book-order-btn" onclick="selectBook(0)">Pre-Order This Book →</button></div>
       </div>
       <div class="book-card">
-        <div class="book-cover-full bc-2"><div class="book-number">02</div><div class="book-icon">✦</div><div class="book-full-title">Biblical Keys to Protection</div><div class="book-rule"></div><div class="book-full-author">Apostle Segun Obadje</div></div>
+        <div class="book-cover-full bc-2">
+          <img class="book-cover-image" src="assets/bookcovers/Biblical Keys to Protection front.jpg" alt="Biblical Keys to Protection" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+          <div class="book-cover-fallback">
+            <div class="book-number">02</div><div class="book-icon">✦</div><div class="book-full-title">Biblical Keys to Protection</div><div class="book-rule"></div><div class="book-full-author">Apostle Segun Obadje</div>
+          </div>
+        </div>
         <div class="book-info"><p class="book-desc">Drawing from Old and New Testament principles, this book unlocks the divine framework for protection available to every believer — spiritual, physical, and relational.</p><div class="book-pricing"><div><div class="price-label">Actual</div><div class="price-full">₦2,500</div></div><div style="text-align:center"><div class="price-label">Pre-Order</div><div class="price-preorder">₦2,000</div></div><div class="save-chip">Save ₦500</div></div><button class="book-order-btn" onclick="selectBook(1)">Pre-Order This Book →</button></div>
       </div>
       <div class="book-card">
-        <div class="book-cover-full bc-3"><div class="book-number">03</div><div class="book-icon">✦</div><div class="book-full-title">Biblical Laws of Productivity</div><div class="book-rule"></div><div class="book-full-author">Apostle Segun Obadje</div></div>
+        <div class="book-cover-full bc-3">
+          <img class="book-cover-image" src="assets/bookcovers/BLOP COVER Front.jpg" alt="Biblical Laws of Productivity" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+          <div class="book-cover-fallback">
+            <div class="book-number">03</div><div class="book-icon">✦</div><div class="book-full-title">Biblical Laws of Productivity</div><div class="book-rule"></div><div class="book-full-author">Apostle Segun Obadje</div>
+          </div>
+        </div>
         <div class="book-info"><p class="book-desc">A powerful synthesis of kingdom principles and practical wisdom that shows believers how to maximise their God-given potential. Fruitfulness is both a divine mandate and an achievable reality.</p><div class="book-pricing"><div><div class="price-label">Actual</div><div class="price-full">₦4,000</div></div><div style="text-align:center"><div class="price-label">Pre-Order</div><div class="price-preorder">₦3,500</div></div><div class="save-chip">Save ₦500</div></div><button class="book-order-btn" onclick="selectBook(2)">Pre-Order This Book →</button></div>
       </div>
       <div class="book-card">
-        <div class="book-cover-full bc-4"><div class="book-number">04</div><div class="book-icon">✦</div><div class="book-full-title">Dominion Over the Spirit of Jezebel</div><div class="book-rule"></div><div class="book-full-author">Apostle Segun Obadje</div></div>
+        <div class="book-cover-full bc-4">
+          <img class="book-cover-image" src="assets/bookcovers/DOTSOJ.jpg" alt="Dominion Over the Spirit of Jezebel" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+          <div class="book-cover-fallback">
+            <div class="book-number">04</div><div class="book-icon">✦</div><div class="book-full-title">Dominion Over the Spirit of Jezebel</div><div class="book-rule"></div><div class="book-full-author">Apostle Segun Obadje</div>
+          </div>
+        </div>
         <div class="book-info"><p class="book-desc">A theologically grounded exposé of one of the most pervasive spiritual influences in the Church. Equips believers and leaders with authoritative strategies for lasting victory.</p><div class="book-pricing"><div><div class="price-label">Actual</div><div class="price-full">₦4,000</div></div><div style="text-align:center"><div class="price-label">Pre-Order</div><div class="price-preorder">₦3,500</div></div><div class="save-chip">Save ₦500</div></div><button class="book-order-btn" onclick="selectBook(3)">Pre-Order This Book →</button></div>
       </div>
     </div>
@@ -590,7 +610,7 @@
           </div>
         </div>
         <span class="bundle-from">Complete set from</span>
-        <div class="bundle-amount">₦13,000</div>
+        <div class="bundle-amount">₦11,000</div>
         <span class="bundle-amount-note">Actual: ₦14,500 · Pre-order price</span>
       </div>
     </div>
@@ -653,6 +673,38 @@
           <div class="form-group"><label>Email Address</label><input type="email" id="launch-email" placeholder="your@email.com"></div>
         </div>
         <div class="form-group"><label>Phone Number</label><input type="tel" id="launch-phone" placeholder="+234 800 000 0000"></div>
+        <div class="form-group"><label>Delivery Preference</label>
+            <select id="launch-delivery">
+                <option value="home-office">Home / Office Delivery</option>
+                <option value="pickup-ggc">Pickup (At GGC)</option>
+                <option value="pickup-glt-extension">Pickup (At a GLT Extension)</option>
+            </select>
+        </div>
+        <div class="form-group" id="launch-address-group"><label>Delivery Address</label><input type="text" id="launch-address" placeholder="Delivery cost will be covered by customer"></div>
+        <div class="form-group" id="launch-extension-group"><label>GLT Extension</label>
+            <select id="launch-extension">
+                <option>Accra</option>
+                <option>Abuja</option>
+                <option>Agricola, Ibadan</option>
+                <option>Ajah</option>
+                <option>Akure</option>
+                <option>Birmingham</option>
+                <option>Challenge, Ibadan</option>
+                <option>Dallas</option>
+                <option>Egbeda</option>
+                <option>Enugu</option>
+                <option>Houston</option>
+                <option>Ikeja</option>
+                <option>Ile-Ife</option>
+                <option>Isolo</option>
+                <option>Lekki</option>
+                <option>Ondo</option>
+                <option>Osogbo</option>
+                <option>Gwagwalada</option>
+                <option>Phase II</option>
+            </select>
+        </div>
+
         <button class="btn-pay" onclick="submitLaunch()">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M1 7h14" stroke="currentColor" stroke-width="1.5"/><path d="M4 11h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
           Proceed to Payment (Paystack)
@@ -721,8 +773,35 @@
           <div class="form-group"><label>Phone Number</label><input type="tel" id="order-phone" placeholder="+234 800 000 0000"></div>
           <div class="form-group"><label>State / City</label><input type="text" id="order-city" placeholder="Lagos, Nigeria"></div>
         </div>
-        <div class="form-group"><label>Delivery Address</label><input type="text" id="order-address" placeholder="Full delivery address"></div>
-        <div class="form-group"><label>Delivery Preference</label><select id="order-delivery"><option>Home / Office Delivery</option><option>Pickup (Confirm with ministry team)</option></select></div>
+        <div class="form-group"><label>Delivery Preference</label>
+            <select id="order-delivery">
+                <option value="home-office">Home / Office Delivery</option>
+                <option value="pickup-ggc">Pickup (At GGC)</option>
+                <option value="pickup-glt-extension">Pickup (At a GLT Extension)</option>
+            </select>
+        </div>
+        <div class="form-group" id="order-address-group"><label>Delivery Address</label><input type="text" id="order-address" placeholder="Delivery cost will be covered by customer"></div>
+        <div class="form-group" id="order-extension-group"><label>GLT Extension</label>
+            <select id="order-extension">
+                <option>Accra</option>
+                <option>Abuja</option>
+                <option>Agricola, Ibadan</option>
+                <option>Ajah</option>
+                <option>Akure</option>
+                <option>Birmingham</option>
+                <option>Challenge, Ibadan</option>
+                <option>Dallas</option>
+                <option>Egbeda</option>
+                <option>Enugu</option>
+                <option>Houston</option>
+                <option>Ikeja</option>
+                <option>Ile-Ife</option>
+                <option>Isolo</option>
+                <option>Lekki</option>
+                <option>Ondo</option>
+                <option>Osogbo</option>
+            </select>
+        </div>
         <button class="btn-pay" onclick="submitOrder()">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M1 7h14" stroke="currentColor" stroke-width="1.5"/><path d="M4 11h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
           Proceed to Payment (Paystack)
@@ -842,13 +921,11 @@ document.addEventListener('DOMContentLoaded', function() {
     refreshOrderPriceLabels();
     refreshBundleDisplay();
   }
-  setInterval(tick, 1000); tick();
-
   // ===== BOOK SELECTION =====
   var actualBookPrices = [4000,2500,4000,4000];
   var preorderBookPrices = [3500,2000,3500,3500];
   var bundleActualPrice = 14500;
-  var bundlePreorderPrice = 13000;
+  var bundlePreorderPrice = 11000;
   var launchAllowedAmounts = [100000,250000,500000,1000000];
   var selected = [false,false,false,false];
 
@@ -897,7 +974,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!amountEl || !noteEl) return;
 
     if (isBundlePromoActive()) {
-      amountEl.textContent = '₦13,000';
+      amountEl.textContent = '₦11,000';
       noteEl.textContent = 'Actual: ₦14,500 · Bundle promo ends 21 Apr 2026';
     } else {
       amountEl.textContent = '₦14,500';
@@ -926,6 +1003,63 @@ document.addEventListener('DOMContentLoaded', function() {
     window.showPage('order');
     setTimeout(function(){ for(var i=0;i<4;i++) window.addBook(i); }, 150);
   };
+
+  function getOrderField(id) {
+    var orderPage = document.getElementById('page-order');
+    return orderPage ? orderPage.querySelector('#' + id) : null;
+  }
+
+  function updateOrderDeliveryFields() {
+    var deliveryEl = getOrderField('order-delivery');
+    var addressGroup = getOrderField('order-address-group');
+    var addressEl = getOrderField('order-address');
+    var extensionGroup = getOrderField('order-extension-group');
+    var extensionEl = getOrderField('order-extension');
+    if (!deliveryEl || !addressGroup || !addressEl || !extensionGroup || !extensionEl) return;
+
+    var deliveryPreference = deliveryEl.value;
+    var needsAddress = deliveryPreference === 'home-office';
+    var needsExtension = deliveryPreference === 'pickup-glt-extension';
+
+    addressGroup.style.display = needsAddress ? 'flex' : 'none';
+    extensionGroup.style.display = needsExtension ? 'flex' : 'none';
+
+    if (!needsAddress) addressEl.value = '';
+    if (!needsExtension) extensionEl.selectedIndex = 0;
+  }
+
+  var orderDeliveryEl = getOrderField('order-delivery');
+  if (orderDeliveryEl) {
+    orderDeliveryEl.addEventListener('change', updateOrderDeliveryFields);
+    updateOrderDeliveryFields();
+  }
+
+  function getLaunchField(id) {
+    var launchPage = document.getElementById('page-launch');
+    return launchPage ? launchPage.querySelector('#' + id) : null;
+  }
+
+  function updateLaunchDeliveryFields() {
+    var deliveryEl = getLaunchField('launch-delivery');
+    var addressGroup = getLaunchField('launch-address-group');
+    var addressEl = getLaunchField('launch-address');
+    var extensionGroup = getLaunchField('launch-extension-group');
+    var extensionEl = getLaunchField('launch-extension');
+    if (!deliveryEl || !addressGroup || !addressEl || !extensionGroup || !extensionEl) return;
+
+    var pref = deliveryEl.value;
+    addressGroup.style.display = pref === 'home-office' ? 'flex' : 'none';
+    extensionGroup.style.display = pref === 'pickup-glt-extension' ? 'flex' : 'none';
+
+    if (pref !== 'home-office') addressEl.value = '';
+    if (pref !== 'pickup-glt-extension') extensionEl.selectedIndex = 0;
+  }
+
+  var launchDeliveryEl = getLaunchField('launch-delivery');
+  if (launchDeliveryEl) {
+    launchDeliveryEl.addEventListener('change', updateLaunchDeliveryFields);
+    updateLaunchDeliveryFields();
+  }
 
   // ===== PAYSTACK KEY =====
   var PK = '';
@@ -1019,13 +1153,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ===== ORDER PAYMENT =====
   window.submitOrder = function() {
-    var name    = document.getElementById('order-name').value.trim();
-    var email   = document.getElementById('order-email').value.trim();
-    var phone   = document.getElementById('order-phone').value.trim();
-    var address = document.getElementById('order-address').value.trim();
+    var nameEl = getOrderField('order-name');
+    var emailEl = getOrderField('order-email');
+    var phoneEl = getOrderField('order-phone');
+    var deliveryEl = getOrderField('order-delivery');
+    var addressEl = getOrderField('order-address');
+    var extensionEl = getOrderField('order-extension');
+
+    if (!nameEl || !emailEl || !phoneEl || !deliveryEl || !addressEl || !extensionEl) {
+      showToast('⚠ Order form is unavailable. Please refresh and try again.');
+      return;
+    }
+
+    var name = nameEl.value.trim();
+    var email = emailEl.value.trim();
+    var phone = phoneEl.value.trim();
+    var deliveryPreference = deliveryEl.value;
+    var address = addressEl.value.trim();
+    var extension = extensionEl.value;
+    var deliveryValue = deliveryEl.options[deliveryEl.selectedIndex].text;
+    var deliveryDetails = '';
 
     if (!selected.some(function(s){return s;})) { showToast('⚠ Please select at least one book.'); return; }
-    if (!name||!email||!phone||!address)         { showToast('⚠ Please fill in all required fields.'); return; }
+    if (!name||!email||!phone) { showToast('⚠ Please fill in all required fields.'); return; }
+    if (deliveryPreference === 'home-office' && !address) {
+      showToast('⚠ Please enter your delivery address.');
+      return;
+    }
+    if (deliveryPreference === 'pickup-glt-extension') {
+      deliveryDetails = extension;
+    } else if (deliveryPreference === 'home-office') {
+      deliveryDetails = address;
+    } else {
+      address = '';
+      extension = '';
+      deliveryDetails = 'Pickup at GGC';
+    }
 
     var total  = calculateOrderTotal();
     var titles = ['The Power of the Blessing','Biblical Keys to Protection','Biblical Laws of Productivity','Dominion Over the Spirit of Jezebel'];
@@ -1046,7 +1209,9 @@ document.addEventListener('DOMContentLoaded', function() {
       metadata: { custom_fields: [
         {display_name:'Name',    variable_name:'name',    value:name},
         {display_name:'Phone',   variable_name:'phone',   value:phone},
+        {display_name:'Delivery', variable_name:'delivery', value:deliveryValue},
         {display_name:'Address', variable_name:'address', value:address},
+        {display_name:'GLT Extension', variable_name:'glt_extension', value:extension},
         {display_name:'Books',   variable_name:'books',   value:books}
       ]},
       onSuccess: function(t){
@@ -1056,7 +1221,9 @@ document.addEventListener('DOMContentLoaded', function() {
           email: email,
           phone: phone,
           address: address,
-          delivery: document.getElementById('order-delivery').value,
+          extension: extension,
+          delivery: deliveryValue,
+          delivery_details: deliveryDetails,
           books: books,
           expected_amount_kobo: total * 100
         };
@@ -1065,7 +1232,9 @@ document.addEventListener('DOMContentLoaded', function() {
           name: name, email: email, phone: phone,
           books: books, amount: '₦'+total.toLocaleString(),
           address: address,
-          delivery: document.getElementById('order-delivery').value,
+          extension: extension,
+          delivery: deliveryValue,
+          delivery_details: deliveryDetails,
           reference: t.reference
         });
       },
@@ -1103,6 +1272,20 @@ document.addEventListener('DOMContentLoaded', function() {
     var email = document.getElementById('launch-email').value.trim();
     var phone = document.getElementById('launch-phone').value.trim();
 
+    var deliveryEl = getLaunchField('launch-delivery');
+    var addressEl  = getLaunchField('launch-address');
+    var extensionEl = getLaunchField('launch-extension');
+
+    var deliveryPref    = deliveryEl ? deliveryEl.value : '';
+    var deliveryValue   = deliveryEl ? deliveryEl.options[deliveryEl.selectedIndex].text : 'N/A';
+    var address         = addressEl  ? addressEl.value.trim() : '';
+    var extension       = extensionEl ? extensionEl.value : '';
+    var deliveryDetails = deliveryPref === 'home-office'
+      ? address
+      : deliveryPref === 'pickup-glt-extension'
+        ? extension
+        : 'Pickup at GGC';
+
     if (!val || launchAllowedAmounts.indexOf(val) === -1) {
       document.getElementById('launch-amount').style.borderColor='#B04040';
       document.getElementById('amount-notice').textContent='⚠ Please choose one approved category: ₦100,000, ₦250,000, ₦500,000, or ₦1,000,000.';
@@ -1110,6 +1293,10 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
     if (!name||!email) { showToast('⚠ Please fill in your name and email.'); return; }
+    if (deliveryPref === 'home-office' && !address) {
+      showToast('⚠ Please enter your delivery address.');
+      return;
+    }
 
     if (!PK) {
       showToast('⚠ Payment config unavailable. Please refresh and try again.');
@@ -1124,9 +1311,12 @@ document.addEventListener('DOMContentLoaded', function() {
       key: PK, email: email, amount: val*100, currency: 'NGN',
       ref: 'LAUNCH-'+Date.now(),
       metadata: { custom_fields: [
-        {display_name:'Donor',variable_name:'donor',value:name},
-        {display_name:'Phone',variable_name:'phone',value:phone||'N/A'},
-        {display_name:'Type', variable_name:'type', value:'Book Launch Seed'}
+        {display_name:'Donor',         variable_name:'donor',         value:name},
+        {display_name:'Phone',         variable_name:'phone',         value:phone||'N/A'},
+        {display_name:'Delivery',      variable_name:'delivery',      value:deliveryValue},
+        {display_name:'Address',       variable_name:'address',       value:address||'N/A'},
+        {display_name:'GLT Extension', variable_name:'glt_extension', value:extension||'N/A'},
+        {display_name:'Type',          variable_name:'type',          value:'Book Launch Seed'}
       ]},
       onSuccess: function(t){
         var context = {
@@ -1134,8 +1324,10 @@ document.addEventListener('DOMContentLoaded', function() {
           name: name,
           email: email,
           phone: phone || 'N/A',
-          address: 'N/A',
-          delivery: 'N/A',
+          address: address || 'N/A',
+          extension: extension || 'N/A',
+          delivery: deliveryValue,
+          delivery_details: deliveryDetails,
           books: 'Book Launch Seed',
           expected_amount_kobo: val * 100
         };
@@ -1143,7 +1335,10 @@ document.addEventListener('DOMContentLoaded', function() {
         logToSheet({
           name: name, email: email, phone: phone||'N/A',
           books: 'Book Launch Seed', amount: '₦'+val.toLocaleString(),
-          address: 'N/A', delivery: 'N/A',
+          address: address||'N/A',
+          extension: extension||'N/A',
+          delivery: deliveryValue,
+          delivery_details: deliveryDetails,
           reference: t.reference
         });
       },
@@ -1196,6 +1391,10 @@ document.addEventListener('DOMContentLoaded', function() {
       console.warn('Sheet log failed:', err);
     });
   }
+
+  // Start countdown updates after all dependent variables/functions are initialized.
+  setInterval(tick, 1000);
+  tick();
 
 }); // end DOMContentLoaded
 </script>

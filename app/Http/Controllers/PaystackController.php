@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class PaystackController extends Controller
 {
@@ -41,17 +42,34 @@ class PaystackController extends Controller
             'page' => ['nullable', 'integer', 'min:1'],
         ]);
 
-        $response = Http::acceptJson()
-            ->withToken($secretKey)
-            ->timeout(20)
-            ->get('https://api.paystack.co/transaction', [
-                'perPage' => $validated['perPage'] ?? 100,
-                'page' => $validated['page'] ?? 1,
+        try {
+            $response = Http::acceptJson()
+                ->withToken($secretKey)
+                ->timeout(20)
+                ->get('https://api.paystack.co/transaction', [
+                    'perPage' => $validated['perPage'] ?? 100,
+                    'page' => $validated['page'] ?? 1,
+                ]);
+        } catch (\Throwable $exception) {
+            Log::error('Paystack transactions request failed.', [
+                'error' => $exception->getMessage(),
             ]);
 
+            return response()->json([
+                'status' => false,
+                'message' => 'Unable to connect to Paystack right now. Please try again shortly.',
+            ], 502);
+        }
+
         $payload = $response->json();
+        $statusCode = $response->status();
 
         if (! is_array($payload)) {
+            Log::warning('Unexpected non-JSON Paystack transactions response.', [
+                'status_code' => $statusCode,
+                'body' => mb_substr($response->body(), 0, 500),
+            ]);
+
             return response()->json([
                 'status' => false,
                 'message' => 'Unexpected response from Paystack.',
@@ -59,10 +77,16 @@ class PaystackController extends Controller
         }
 
         if (! $response->ok()) {
+            Log::warning('Paystack transactions returned an error status.', [
+                'status_code' => $statusCode,
+                'message' => $payload['message'] ?? null,
+                'payload_status' => $payload['status'] ?? null,
+            ]);
+
             return response()->json([
                 'status' => false,
-                'message' => $payload['message'] ?? 'Could not fetch transactions from Paystack.',
-            ], $response->status());
+                'message' => $payload['message'] ?? 'Could not fetch transactions from Paystack. Confirm your API keys and Paystack account status.',
+            ], $statusCode);
         }
 
         return response()->json([
