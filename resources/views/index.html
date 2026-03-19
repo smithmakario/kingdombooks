@@ -807,8 +807,9 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ===== COUNTDOWNS =====
-  var preorderDate = new Date(); preorderDate.setDate(preorderDate.getDate()+21); preorderDate.setHours(23,59,59,0);
-  var launchEventDate = new Date(); launchEventDate.setDate(launchEventDate.getDate()+14); launchEventDate.setHours(23,59,59,0);
+  var preorderDate = new Date(2026, 2, 21, 23, 59, 59, 999);
+  var launchEventDate = new Date(2026, 2, 21, 12, 0, 0, 0);
+  var bundlePromoEndDate = new Date(2026, 3, 21, 23, 59, 59, 999);
 
   function pad(n){ return String(n).padStart(2,'0'); }
 
@@ -820,6 +821,11 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('hours').textContent  = pad(Math.floor((d1%86400000)/3600000));
       document.getElementById('minutes').textContent= pad(Math.floor((d1%3600000)/60000));
       document.getElementById('seconds').textContent= pad(Math.floor((d1%60000)/1000));
+    } else {
+      document.getElementById('days').textContent = '00';
+      document.getElementById('hours').textContent = '00';
+      document.getElementById('minutes').textContent = '00';
+      document.getElementById('seconds').textContent = '00';
     }
     var d2 = launchEventDate - now;
     if (d2 > 0) {
@@ -827,22 +833,76 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('lhours').textContent  = pad(Math.floor((d2%86400000)/3600000));
       document.getElementById('lminutes').textContent= pad(Math.floor((d2%3600000)/60000));
       document.getElementById('lseconds').textContent= pad(Math.floor((d2%60000)/1000));
+    } else {
+      document.getElementById('ldays').textContent = '00';
+      document.getElementById('lhours').textContent = '00';
+      document.getElementById('lminutes').textContent = '00';
+      document.getElementById('lseconds').textContent = '00';
     }
+    refreshOrderPriceLabels();
+    refreshBundleDisplay();
   }
   setInterval(tick, 1000); tick();
 
   // ===== BOOK SELECTION =====
-  var bookPrices = [3500,2000,3500,3500];
+  var actualBookPrices = [4000,2500,4000,4000];
+  var preorderBookPrices = [3500,2000,3500,3500];
+  var bundleActualPrice = 14500;
   var bundlePreorderPrice = 13000;
   var launchAllowedAmounts = [100000,250000,500000,1000000];
   var selected = [false,false,false,false];
 
+  function isPreorderActive() {
+    return new Date() <= preorderDate;
+  }
+
+  function isBundlePromoActive() {
+    return new Date() <= bundlePromoEndDate;
+  }
+
+  function getBookPrice(index) {
+    return isPreorderActive() ? preorderBookPrices[index] : actualBookPrices[index];
+  }
+
   function calculateOrderTotal() {
     var total = selected.reduce(function(sum, isSelected, i) {
-      return sum + (isSelected ? bookPrices[i] : 0);
+      return sum + (isSelected ? getBookPrice(i) : 0);
     }, 0);
+
     var allBooksSelected = selected.every(function(isSelected) { return isSelected; });
-    return allBooksSelected ? bundlePreorderPrice : total;
+    if (allBooksSelected) {
+      return isBundlePromoActive() ? bundlePreorderPrice : bundleActualPrice;
+    }
+
+    return total;
+  }
+
+  function refreshOrderPriceLabels() {
+    var prices = [getBookPrice(0), getBookPrice(1), getBookPrice(2), getBookPrice(3)];
+    var stripPrices = document.querySelectorAll('.strip-book-price');
+    var selectPrices = document.querySelectorAll('.book-select-price');
+
+    prices.forEach(function(price, idx) {
+      if (stripPrices[idx]) stripPrices[idx].textContent = '₦' + price.toLocaleString();
+      if (selectPrices[idx]) selectPrices[idx].textContent = '₦' + price.toLocaleString();
+    });
+
+    var total = calculateOrderTotal();
+    document.getElementById('order-total').textContent = total ? '₦' + total.toLocaleString() : '₦0';
+  }
+
+  function refreshBundleDisplay() {
+    var amountEl = document.querySelector('.bundle-amount');
+    var noteEl = document.querySelector('.bundle-amount-note');
+    if (!amountEl || !noteEl) return;
+
+    if (isBundlePromoActive()) {
+      amountEl.textContent = '₦13,000';
+      noteEl.textContent = 'Actual: ₦14,500 · Bundle promo ends 21 Apr 2026';
+    } else {
+      amountEl.textContent = '₦14,500';
+      noteEl.textContent = 'Standard bundle price';
+    }
   }
 
   window.toggleBook = function(idx) {
