@@ -19,6 +19,9 @@
                         <x-nav-link :href="route('admin.orders.dashboard')" :active="request()->routeIs('admin.orders.*') || request()->routeIs('admin.paystack.*')">
                             {{ __('Payments') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.deliveries.pending')" :active="request()->routeIs('admin.deliveries.*')">
+                            {{ __('Pending Deliveries') }}
+                        </x-nav-link>
                     @endif
                     @if (Auth::user()->is_superadmin)
                         <x-nav-link :href="route('admin.users.pending')" :active="request()->routeIs('admin.users.*')">
@@ -86,6 +89,9 @@
             @if (Auth::user()->canViewPayments())
                 <x-responsive-nav-link :href="route('admin.orders.dashboard')">
                     {{ __('Payments') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.deliveries.pending')">
+                    {{ __('Pending Deliveries') }}
                 </x-responsive-nav-link>
             @endif
         </div>

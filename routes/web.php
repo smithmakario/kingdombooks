@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\UserApprovalController;
 use App\Http\Controllers\Admin\PaystackLogController;
+use App\Http\Controllers\Admin\PendingDeliveryController;
 use App\Http\Controllers\PaystackController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReceiptController;
@@ -38,6 +39,7 @@ Route::middleware(['auth', 'payments_admin'])->prefix('admin')->name('admin.')->
         return view('orders-dashboard');
     })->name('orders.dashboard');
     Route::get('/paystack/transactions', [PaystackController::class, 'transactions'])->name('paystack.transactions');
+    Route::get('/deliveries/pending', [PendingDeliveryController::class, 'index'])->name('deliveries.pending');
 });
 
 require __DIR__.'/auth.php';
