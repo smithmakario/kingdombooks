@@ -475,7 +475,8 @@
   @media(max-width:900px) {
     .stats-row { grid-template-columns:1fr 1fr; }
     .orders-table th:nth-child(4), .orders-table td:nth-child(4),
-    .orders-table th:nth-child(6), .orders-table td:nth-child(6) { display:none; }
+    .orders-table th:nth-child(6), .orders-table td:nth-child(6),
+    .orders-table th:nth-child(7), .orders-table td:nth-child(7) { display:none; }
   }
 
   @media(max-width:600px) {
@@ -743,15 +744,21 @@
     var page  = filteredOrders.slice(start, end);
 
     var rows = page.map(function(o, idx) {
-      var name    = getMetaField(o, 'name') || getMetaField(o, 'customer_name') || getMetaField(o, 'donor') || (o.customer ? o.customer.first_name + ' ' + o.customer.last_name : '—');
-      var phone   = getMetaField(o, 'phone') || '—';
-      var books   = getMetaField(o, 'books') || getMetaField(o, 'payment_type') || '—';
-      var address = getMetaField(o, 'address') || '—';
-      var email   = o.customer ? o.customer.email : '—';
-      var amount  = '₦' + (o.amount / 100).toLocaleString();
-      var date    = formatDate(o.paid_at || o.created_at);
-      var status  = o.status;
-      var ref     = o.reference || '—';
+      var name         = getMetaField(o, 'name') || getMetaField(o, 'customer_name') || getMetaField(o, 'donor') || (o.customer ? o.customer.first_name + ' ' + o.customer.last_name : '—');
+      var phone        = getMetaField(o, 'phone') || '—';
+      var books        = getMetaField(o, 'books') || getMetaField(o, 'payment_type') || '—';
+      var address      = getMetaField(o, 'address') || '—';
+      var delivery     = getMetaField(o, 'delivery') || '—';
+      var extension    = getMetaField(o, 'glt_extension') || '';
+      var email        = o.customer ? o.customer.email : '—';
+      var amount       = '₦' + (o.amount / 100).toLocaleString();
+      var date         = formatDate(o.paid_at || o.created_at);
+      var status       = o.status;
+      var ref          = o.reference || '—';
+
+      var deliveryDisplay = delivery;
+      if (extension && extension !== 'N/A') deliveryDisplay += '<br><span style="font-size:0.72rem;color:var(--muted)">' + extension + '</span>';
+      else if (address && address !== '—' && address !== 'N/A') deliveryDisplay += '<br><span style="font-size:0.72rem;color:var(--muted)">' + address + '</span>';
 
       var bookTags = books !== '—' ? books.split(',').map(function(b){
         return '<span class="books-tag">' + b.trim() + '</span>';
@@ -767,12 +774,13 @@
         '<td class="books-cell">' + bookTags + '</td>' +
         '<td style="white-space:nowrap">' + date + '</td>' +
         '<td class="ref-cell">' + ref + '</td>' +
+        '<td style="font-size:0.82rem">' + deliveryDisplay + '</td>' +
         '</tr>';
     }).join('');
 
     var table = '<table class="orders-table">' +
       '<thead><tr>' +
-      '<th>Customer</th><th>Amount</th><th>Status</th><th>Books</th><th>Date</th><th>Reference</th>' +
+      '<th>Customer</th><th>Amount</th><th>Status</th><th>Books</th><th>Date</th><th>Reference</th><th>Delivery</th>' +
       '</tr></thead>' +
       '<tbody>' + rows + '</tbody>' +
       '</table>';
@@ -810,14 +818,16 @@
     var o = filteredOrders[idx];
     if (!o) return;
 
-    var name    = getMetaField(o, 'name') || getMetaField(o, 'customer_name') || getMetaField(o, 'donor') || (o.customer ? o.customer.first_name + ' ' + o.customer.last_name : '—');
-    var phone   = getMetaField(o, 'phone') || '—';
-    var books   = getMetaField(o, 'books') || getMetaField(o, 'payment_type') || '—';
-    var address = getMetaField(o, 'address') || '—';
-    var email   = o.customer ? o.customer.email : '—';
-    var amount  = '₦' + (o.amount / 100).toLocaleString();
-    var date    = formatDate(o.paid_at || o.created_at);
-    var status  = o.status;
+    var name      = getMetaField(o, 'name') || getMetaField(o, 'customer_name') || getMetaField(o, 'donor') || (o.customer ? o.customer.first_name + ' ' + o.customer.last_name : '—');
+    var phone     = getMetaField(o, 'phone') || '—';
+    var books     = getMetaField(o, 'books') || getMetaField(o, 'payment_type') || '—';
+    var address   = getMetaField(o, 'address') || '—';
+    var delivery  = getMetaField(o, 'delivery') || '—';
+    var extension = getMetaField(o, 'glt_extension') || '';
+    var email     = o.customer ? o.customer.email : '—';
+    var amount    = '₦' + (o.amount / 100).toLocaleString();
+    var date      = formatDate(o.paid_at || o.created_at);
+    var status    = o.status;
 
     var statusBadge = '<span class="status-badge status-' + (status==='success'?'success':status==='failed'?'failed':'pending') + '">' +
       (status==='success'?'✓ Payment Successful':status==='failed'?'✗ Payment Failed':'⏳ '+status) + '</span>';
@@ -826,6 +836,13 @@
       return '<span class="books-tag" style="margin:0.2rem 0.2rem 0 0">' + b.trim() + '</span>';
     }).join('') : '—';
 
+    var addressRow = (address && address !== '—' && address !== 'N/A')
+      ? '<div class="detail-row"><div class="detail-label">Delivery Address</div><div class="detail-value">' + address + '</div></div>'
+      : '';
+    var extensionRow = (extension && extension !== 'N/A')
+      ? '<div class="detail-row"><div class="detail-label">GLT Extension</div><div class="detail-value">' + extension + '</div></div>'
+      : '';
+
     document.getElementById('modal-body').innerHTML =
       '<div class="detail-row"><div class="detail-label">Status</div><div class="detail-value">' + statusBadge + '</div></div>' +
       '<div class="detail-row"><div class="detail-label">Amount Paid</div><div class="detail-value amount">' + amount + '</div></div>' +
@@ -833,7 +850,9 @@
       '<div class="detail-row"><div class="detail-label">Full Name</div><div class="detail-value">' + name + '</div></div>' +
       '<div class="detail-row"><div class="detail-label">Email</div><div class="detail-value">' + email + '</div></div>' +
       '<div class="detail-row"><div class="detail-label">Phone</div><div class="detail-value">' + phone + '</div></div>' +
-      '<div class="detail-row"><div class="detail-label">Address</div><div class="detail-value">' + address + '</div></div>' +
+      '<div class="detail-row"><div class="detail-label">Delivery</div><div class="detail-value">' + delivery + '</div></div>' +
+      addressRow +
+      extensionRow +
       '<hr class="modal-divider">' +
       '<div class="detail-row"><div class="detail-label">Books Ordered</div><div class="detail-value">' + bookList + '</div></div>' +
       '<hr class="modal-divider">' +
@@ -856,12 +875,14 @@
   function exportCSV() {
     if (filteredOrders.length === 0) { alert('No orders to export.'); return; }
 
-    var headers = ['Name','Email','Phone','Amount (₦)','Status','Books','Address','Date','Reference'];
+    var headers = ['Name','Email','Phone','Amount (₦)','Status','Books','Delivery','Address','GLT Extension','Date','Reference'];
     var rows = filteredOrders.map(function(o) {
-      var name    = getMetaField(o,'name')||getMetaField(o,'customer_name')||getMetaField(o,'donor')||(o.customer?o.customer.first_name+' '+o.customer.last_name:'');
-      var phone   = getMetaField(o,'phone')||'';
-      var books   = getMetaField(o,'books')||getMetaField(o,'payment_type')||'';
-      var address = getMetaField(o,'address')||'';
+      var name      = getMetaField(o,'name')||getMetaField(o,'customer_name')||getMetaField(o,'donor')||(o.customer?o.customer.first_name+' '+o.customer.last_name:'');
+      var phone     = getMetaField(o,'phone')||'';
+      var books     = getMetaField(o,'books')||getMetaField(o,'payment_type')||'';
+      var address   = getMetaField(o,'address')||'';
+      var delivery  = getMetaField(o,'delivery')||'';
+      var extension = getMetaField(o,'glt_extension')||'';
       return [
         '"'+name+'"',
         '"'+(o.customer?o.customer.email:'')+'"',
@@ -869,7 +890,9 @@
         (o.amount/100),
         o.status,
         '"'+books+'"',
+        '"'+delivery+'"',
         '"'+address+'"',
+        '"'+extension+'"',
         '"'+formatDate(o.paid_at||o.created_at)+'"',
         '"'+(o.reference||'')+'"'
       ].join(',');

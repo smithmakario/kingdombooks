@@ -14,7 +14,7 @@
                             All successful Paystack order payments pending delivery.
                         </p>
                         <span class="inline-flex items-center rounded-md border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-indigo-700">
-                            {{ $deliveries->count() }} pending
+                            {{ $deliveries->total() }} pending
                         </span>
                     </div>
 
@@ -59,6 +59,12 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        @if ($deliveries->hasPages())
+                            <div class="mt-4">
+                                {{ $deliveries->links() }}
+                            </div>
+                        @endif
                     @endif
                 </div>
             </div>

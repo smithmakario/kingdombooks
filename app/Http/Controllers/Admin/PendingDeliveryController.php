@@ -16,7 +16,8 @@ class PendingDeliveryController extends Controller
             ->where('payment_type', 'order')
             ->orderByDesc('paid_at')
             ->orderByDesc('id')
-            ->get();
+            ->paginate(25)
+            ->withQueryString();
 
         return view('admin.pending-deliveries', [
             'deliveries' => $deliveries,
